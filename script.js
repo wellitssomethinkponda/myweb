@@ -180,7 +180,7 @@ function shareReceiptOnIphone() {
   const fields = [
     { label: 'Дата и время транзакции', val: date, bold: true },
     { label: 'Способ отправки', val: 'Smart payments', bold: false },
-    { label: 'Плательщик', val: 'ЛУТФИНИСО МАХАМАТСОЛИЕВНА ГУЛАМОВА', bold: true },
+    { label: 'Плательщик', val: 'Махмуджанов Азиз Абдуллаевич', bold: true },
     { label: 'Реквизиты плательщика', val: '1180000048110691', bold: true },
     { label: 'Банк плательщика', val: 'ЗАО "Демир Кыргыз Интернэшнл Банк"', bold: false },
     { label: 'Получатель', val: name, bold: true },
@@ -276,4 +276,3 @@ function shareReceiptOnIphone() {
     }
   }, 'image/png');
 }
-  
