@@ -158,7 +158,7 @@ function shareReceiptOnIphone() {
 
   addCheckLine('Дата и время транзакции', date);
   addCheckLine('Способ отправки', 'Smart payments');
-  addCheckLine('Плательщик', 'ЛУТФИНИСО МАХАМАТСОЛИЕВНА ГУЛАМОВА');
+  addCheckLine('Плательщик', 'Махмуджанов Азиз Абдуллаевич');
   addCheckLine('Реквизиты плательщика', '1180000048110691');
   addCheckLine('Банк плательщика', 'ЗАО "Демир Кыргыз Интернэшнл Банк"');
   addCheckLine('Получатель', name);
