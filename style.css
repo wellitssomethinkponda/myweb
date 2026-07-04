@@ -137,7 +137,7 @@ h2 {
   min-height: 20px;
 }
 
-/* Квитанция на самом сайте */
+/* Квитанция */
 .receipt {
   background: white;
   color: black;
@@ -201,4 +201,61 @@ h2 {
   font-weight: bold;
   pointer-events: none;
   background: rgba(255, 255, 255, 0.9);
+}
+
+/* СТИЛИ ДЛЯ МГНОВЕННОГО ОТКРЫТИЯ ФОТО ЧЕКА */
+#mobile-receipt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.96);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.overlay-text {
+  color: #ffffff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+#overlay-img-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.generated-receipt-photo {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.8);
+  user-select: contain; /* Разрешает мобильное контекстное меню картинок */
+  -webkit-user-select: contain;
+}
+
+.overlay-close-btn {
+  margin-top: 20px;
+  padding: 15px 40px;
+  background: #e30613;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 360px;
 }
