@@ -9,6 +9,7 @@ body {
   color: white;
   font-family: Arial, sans-serif;
   padding-bottom: 30px;
+  transition: background 0.3s ease;
 }
 
 .screen {
@@ -137,13 +138,6 @@ h2 {
   min-height: 20px;
 }
 
-.recipient-info {
-  background: #1f1f1f;
-  padding: 16px;
-  border-radius: 12px;
-  margin: 15px 0;
-}
-
 /* Квитанция */
 .receipt {
   background: white;
@@ -154,7 +148,7 @@ h2 {
   margin: 15px 0;
   font-size: 15.5px;
   line-height: 1.65;
-  position: relative; /* Чтобы синяя печать ориентировалась по границам чека */
+  position: relative;
 }
 
 .receipt-top {
@@ -193,10 +187,10 @@ h2 {
   border-radius: 12px;
 }
 
-/* Синяя печать адаптированная под скриншотер */
+/* Синяя печать */
 .blue-seal {
   position: absolute;
-  right: 20px;
+  right: 25px;
   top: 40%;
   border: 3px double #00aaff;
   color: #00aaff;
