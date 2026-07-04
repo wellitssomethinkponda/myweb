@@ -9,7 +9,6 @@ body {
   color: white;
   font-family: Arial, sans-serif;
   padding-bottom: 30px;
-  transition: background 0.3s ease;
 }
 
 .screen {
@@ -138,7 +137,7 @@ h2 {
   min-height: 20px;
 }
 
-/* Квитанция */
+/* Квитанция на самом сайте */
 .receipt {
   background: white;
   color: black;
