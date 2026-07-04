@@ -77,13 +77,13 @@
       <h2>Квитанция</h2>
     </header>
     
-    <div id="receipt-capture-area" style="background: #0a0a0a; padding: 1px;">
+    <div id="receipt-capture-area">
       <div class="receipt">
         <div class="receipt-top">
           <div class="db-logo">db</div>
           <div>
-            <strong>DemirBank</strong><br>
-            <small style="color: #555;">bank for your life</small>
+            <strong style="font-size: 15px;">DemirBank</strong><br>
+            <small style="color: #555; font-size: 11px;">bank for your life</small>
           </div>
           <div class="tx-number">№<span id="tx-id">384596180</span></div>
         </div>
@@ -99,7 +99,7 @@
           <p><strong>Получатель</strong><br><span id="rec-name"></span></p>
           <p><strong>Реквизиты получателя</strong><br><span id="rec-phone"></span></p>
           
-          <p><strong>Сумма</strong><br><strong id="rec-amount"></strong> KGS</p>
+          <p><strong>Сумма</strong><br><strong id="rec-amount" style="color: #000; font-size: 16px;"></strong> KGS</p>
           <p><strong>Комиссия</strong><br>0,00 KGS</p>
           
           <p><strong>Описание</strong><br><span id="rec-description">MBank - пополнение по номеру телефона</span></p>
@@ -109,11 +109,10 @@
           ЗАО «ДЕМИР КЫРГЫЗ<br>ИНТЕРНЭШНЛ БАНК»
         </div>
 
-        <div id="qr-code" style="margin:20px auto; display: flex; justify-content: center;"></div>
+        <div id="qr-code" style="margin: 10px auto 5px auto; display: flex; justify-content: center;"></div>
 
         <div class="receipt-footer">
-          <small>Лицензия НБКР № 035</small><br>
-          <small>+996 (312) 610 610, 2222</small>
+          <small>Лицензия НБКР № 035 &nbsp;|&nbsp; +996 (312) 610 610</small>
         </div>
       </div>
     </div>
@@ -134,9 +133,8 @@
 
   <div id="mobile-receipt-overlay" style="display: none;">
     <p class="overlay-text">
-      Фото чека успешно создано!<br>
-      <b>Зажми пальцем картинку ниже</b>,<br>
-      чтобы Переслать / Сохранить её.
+      Фото чека готово! Она сжата под 1 скриншот.<br>
+      <b>Зажми пальцем картинку ниже</b>, чтобы отправить.
     </p>
     <div id="overlay-img-container"></div>
     <button onclick="closeOverlay()" class="overlay-close-btn">Вернуться назад</button>
