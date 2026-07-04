@@ -2,11 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>DemirBank</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.41.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -44,7 +43,6 @@
       <h2 id="bank-title">МБанк</h2>
     </header>
     <div class="content">
-      
       <div class="form-group">
         <label>Номер телефона</label>
         <div class="phone-input">
@@ -77,48 +75,42 @@
       <h2>Квитанция</h2>
     </header>
     
-    <div id="receipt-capture-area">
-      <div class="receipt">
-        <div class="receipt-top">
-          <div class="db-logo">db</div>
-          <div>
-            <strong style="font-size: 15px;">DemirBank</strong><br>
-            <small style="color: #555; font-size: 11px;">bank for your life</small>
-          </div>
-          <div class="tx-number">№<span id="tx-id">384596180</span></div>
+    <div class="receipt">
+      <div class="receipt-top">
+        <div class="db-logo">db</div>
+        <div>
+          <strong style="font-size: 14px;">DemirBank</strong><br>
+          <small style="color: #555; font-size: 10px;">bank for your life</small>
         </div>
+        <div class="tx-number">№<span id="tx-id">384596180</span></div>
+      </div>
 
-        <div class="receipt-info">
-          <p><strong>Дата и время транзакции</strong><br><span id="receipt-date"></span></p>
-          <p><strong>Способ отправки</strong><br>Smart payments</p>
-          
-          <p><strong>Плательщик</strong><br>ЛУТФИНИСО МАХАМАТСОЛИЕВНА ГУЛАМОВА</p>
-          <p><strong>Реквизиты плательщика</strong><br>1180000048110691</p>
-          <p><strong>Банк плательщика</strong><br>ЗАО "Демир Кыргыз Интернэшнл Банк"</p>
-          
-          <p><strong>Получатель</strong><br><span id="rec-name"></span></p>
-          <p><strong>Реквизиты получателя</strong><br><span id="rec-phone"></span></p>
-          
-          <p><strong>Сумма</strong><br><strong id="rec-amount" style="color: #000; font-size: 16px;"></strong> KGS</p>
-          <p><strong>Комиссия</strong><br>0,00 KGS</p>
-          
-          <p><strong>Описание</strong><br><span id="rec-description">MBank - пополнение по номеру телефона</span></p>
-        </div>
+      <div class="receipt-info">
+        <p><strong>Дата и время транзакции</strong><br><span id="receipt-date"></span></p>
+        <p><strong>Способ отправки</strong><br>Smart payments</p>
+        <p><strong>Плательщик</strong><br>ЛУТФИНИСО МАХАМАТСОЛИЕВНА ГУЛАМОВА</p>
+        <p><strong>Реквизиты плательщика</strong><br>1180000048110691</p>
+        <p><strong>Банк плательщика</strong><br>ЗАО "Демир Кыргыз Интернэшнл Банк"</p>
+        <p><strong>Получатель</strong><br><span id="rec-name"></span></p>
+        <p><strong>Реквизиты получателя</strong><br><span id="rec-phone"></span></p>
+        <p><strong>Сумма</strong><br><strong id="rec-amount" style="color: #000; font-size: 15px;"></strong> KGS</p>
+        <p><strong>Комиссия</strong><br>0,00 KGS</p>
+        <p><strong>Описание</strong><br><span id="rec-description">MBank - пополнение по номеру телефона</span></p>
+      </div>
 
-        <div class="blue-seal">
-          ЗАО «ДЕМИР КЫРГЫЗ<br>ИНТЕРНЭШНЛ БАНК»
-        </div>
+      <div class="blue-seal">
+        ЗАО «ДЕМИР КЫРГЫЗ<br>ИНТЕРНЭШНЛ БАНК»
+      </div>
 
-        <div id="qr-code" style="margin: 10px auto 5px auto; display: flex; justify-content: center;"></div>
+      <div id="qr-code" style="margin: 8px auto 3px auto; display: flex; justify-content: center;"></div>
 
-        <div class="receipt-footer">
-          <small>Лицензия НБКР № 035 &nbsp;|&nbsp; +996 (312) 610 610</small>
-        </div>
+      <div class="receipt-footer">
+        <small>Лицензия НБКР № 035 &nbsp;|&nbsp; +996 (312) 610 610</small>
       </div>
     </div>
 
     <div id="receipt-actions">
-      <button onclick="createReceiptPhoto()" class="big-btn" style="background:#00c853; font-weight: bold; color: white;">Сгенерировать фото чека</button>
+      <button onclick="shareReceiptOnIphone()" class="big-btn" style="background:#007aff; font-weight: bold; color: white;">Отправить чек (Поделиться)</button>
       <button onclick="goBackToMain()" class="big-btn" style="background:#e30613;">На главную</button>
     </div>
   </div>
@@ -129,15 +121,6 @@
       <h2>История операций</h2>
     </header>
     <div id="history-list" class="history-list"></div>
-  </div>
-
-  <div id="mobile-receipt-overlay" style="display: none;">
-    <p class="overlay-text">
-      Фото чека готово! Она сжата под 1 скриншот.<br>
-      <b>Зажми пальцем картинку ниже</b>, чтобы отправить.
-    </p>
-    <div id="overlay-img-container"></div>
-    <button onclick="closeOverlay()" class="overlay-close-btn">Вернуться назад</button>
   </div>
 
   <script src="data.js"></script>
