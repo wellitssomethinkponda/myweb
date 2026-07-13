@@ -1,6 +1,7 @@
 let currentScreen = 'main-screen';
 let selectedBankName = 'МБанк';
 let historyData = [];
+let html5QrCode; // Глобальная переменная для управления QR-сканером
 
 // Массив банков
 const banks = [
@@ -60,6 +61,7 @@ function resetTransferForm() {
   document.getElementById('name-input').value = '';
   document.getElementById('amount-input').value = '';
   document.getElementById('continue-btn').disabled = true;
+  stopQRScanner(); // Выключаем камеру при сбросе/выходе
 }
 
 function checkFormValid() {
@@ -69,6 +71,54 @@ function checkFormValid() {
   const nameLen = document.getElementById('name-input').value.trim().length;
   const amount = parseFloat(document.getElementById('amount-input').value || 0);
   document.getElementById('continue-btn').disabled = !(phoneLen === 9 && nameLen > 0 && amount > 0);
+}
+
+// ФУНКЦИИ ДЛЯ СКАНИРОВАНИЯ QR-КОДА
+function startQRScanner() {
+  const container = document.getElementById('reader-container');
+  container.style.display = 'block';
+
+  Html5Qrcode.getCameras().then(cameras => {
+    if (cameras && cameras.length > 0) {
+      // Пытаемся взять заднюю (основную) камеру телефона, если доступно более одной
+      const cameraId = cameras.length > 1 ? cameras[1].id : cameras[0].id;
+      html5QrCode = new Html5Qrcode("reader");
+      
+      html5QrCode.start(
+        cameraId,
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        (decodedText) => {
+          // Записываем имя из QR в поле ФИО
+          document.getElementById('name-input').value = decodedText;
+          // Закрываем камеру и прячем контейнер
+          stopQRScanner();
+          // Принудительно проверяем валидацию формы
+          checkFormValid();
+        },
+        () => { /* Логи ошибок детекции глушим */ }
+      ).catch(err => {
+        console.error("Ошибка старта сканера:", err);
+      });
+    } else {
+      alert("Камера не найдена");
+    }
+  }).catch(err => {
+    console.error("Доступ к камере заблокирован:", err);
+    alert("Разрешите доступ к камере в браузере.");
+  });
+}
+
+function stopQRScanner() {
+  const container = document.getElementById('reader-container');
+  if (container) container.style.display = 'none';
+  
+  if (html5QrCode && html5QrCode.isScanning) {
+    html5QrCode.stop().then(() => {
+      console.log("Сканер остановлен");
+    }).catch(err => {
+      console.error("Ошибка остановки сканера:", err);
+    });
+  }
 }
 
 // СОЗДАНИЕ ЧЕКА С АВТОМАТИЧЕСКИМ ВРЕМЕНЕМ TRANSATION
@@ -219,9 +269,9 @@ function shareReceiptOnIphone() {
   ctx.font = '18px Arial';
   ctx.fillText(desc, 50, y);
 
-  // СИНЯЯ БАНКОВСКАЯ ПЕЧАТЬ ПОД УГЛОМ
+  // ВОССТАНОВЛЕНО: СИНЯЯ БАНКОВСКАЯ ПЕЧАТЬ ПОД УГЛОМ И ФУТЕР ХОЛСТА
   ctx.save();
-  ctx.translate(430, 480);
+  ctx.translate(430, 720);
   ctx.rotate(-12 * Math.PI / 180);
 
   ctx.strokeStyle = '#29b3e7';
@@ -237,95 +287,8 @@ function shareReceiptOnIphone() {
   ctx.fillText('db', -66, 4);
 
   ctx.font = 'bold 10px Arial';
-  ctx.fillText('ЗАО «ДЕМИР КЫРГЫЗ', -40, -5);
-  ctx.fillText('ИНТЕРНЭШНЛ БАНК»', -40, 12);
+  ctx.fillText('ЗАО «ДЕМИР КЫРГЫЗ', -40, -10);
+  ctx.fillText('ИНТЕРНЭШНЛ БАНК»', -40, 5);
   ctx.restore();
 
-  // Подвал
-  y = 830;
-  ctx.strokeStyle = '#eeeeee';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(50, y);
-  ctx.lineTo(550, y);
-  ctx.stroke();
-
-  y += 30;
-  ctx.fillStyle = '#8c8c8c';
-  ctx.font = '15px Arial';
-  ctx.fillText('Лицензия НБКР № 035', 50, y);
   
-  ctx.textAlign = 'right';
-  ctx.fillText('+996 (312) 610 610, 2222', 550, y);
-
-  // Вызов системного меню «Поделиться» картинкой
-  canvas.toBlob(blob => {
-    const file = new File([blob], `receipt_${txId}.png`, { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      navigator.share({
-        files: [file],
-        title: 'Квитанция DemirBank',
-        text: 'Электронный чек перевода'
-      }).catch(err => console.log('Отмена шаринга'));
-    } else {
-      // Фолбек скачивания файла на ПК
-      const link = document.createElement('a');
-      link.download = `receipt_${txId}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-    }
-  }, 'image/png');
-}
-
-let scannedName = "";
-
-// 1. Запуск сканера
-Html5Qrcode.getCameras().then(cameras => {
-  if (cameras && cameras.length > 0) {
-    const cameraId = cameras[0].id; // берем основную камеру
-    const html5QrCode = new Html5Qrcode("reader");
-    
-    html5QrCode.start(
-      cameraId,
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      (decodedText, decodedResult) => {
-        // Успешное чтение QR
-        scannedName = decodedText; // Сохраняем имя из QR
-        alert(`QR отсканирован! Имя: ${scannedName}`);
-        html5QrCode.stop(); // Останавливаем камеру после сканирования
-      },
-      (errorMessage) => {
-        // Ошибки сканирования (можно оставить пустым)
-      }
-    );
-  }
-}).catch(err => {
-  console.error("Ошибка при доступе к камере: ", err);
-});
-
-// 2. Обработка ввода и времени
-function processData() {
-  if (!scannedName) {
-    alert("Пожалуйста, сначала отсканируйте QR-код!");
-    return;
-  }
-  
-  const sum = document.getElementById("amount").value;
-  if (!sum) {
-    alert("Введите сумму!");
-    return;
-  }
-
-  // Получаем текущее время
-  const now = new Date();
-  const timeString = now.toLocaleTimeString('ru-RU'); // пример: 18:35:12
-
-  // Выводим результат
-  const outputDiv = document.getElementById("output");
-  outputDiv.innerHTML = `
-    <p>Имя: <b>${scannedName}</b></p>
-    <p>Сумма: <b>${sum}</b></p>
-    <p>Время: <b>${timeString}</b></p>
-  `;
-}
-
