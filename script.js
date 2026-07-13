@@ -76,26 +76,22 @@ function checkFormValid() {
 // ФУНКЦИИ ДЛЯ СКАНИРОВАНИЯ QR-КОДА
 function startQRScanner() {
   const container = document.getElementById('reader-container');
-  container.style.display = 'block';
+  container.style.style.display = 'block';
 
   Html5Qrcode.getCameras().then(cameras => {
     if (cameras && cameras.length > 0) {
-      // Пытаемся взять заднюю (основную) камеру телефона, если доступно более одной
-      const cameraId = cameras.length > 1 ? cameras[1].id : cameras[0].id;
+      const cameraId = cameras[0].id;
       html5QrCode = new Html5Qrcode("reader");
       
       html5QrCode.start(
         cameraId,
         { fps: 10, qrbox: { width: 220, height: 220 } },
         (decodedText) => {
-          // Записываем имя из QR в поле ФИО
           document.getElementById('name-input').value = decodedText;
-          // Закрываем камеру и прячем контейнер
           stopQRScanner();
-          // Принудительно проверяем валидацию формы
           checkFormValid();
         },
-        () => { /* Логи ошибок детекции глушим */ }
+        () => { /* Глушим ошибки кадра */ }
       ).catch(err => {
         console.error("Ошибка старта сканера:", err);
       });
@@ -110,7 +106,7 @@ function startQRScanner() {
 
 function stopQRScanner() {
   const container = document.getElementById('reader-container');
-  if (container) container.style.display = 'none';
+  if (container) container.style.style.display = 'none';
   
   if (html5QrCode && html5QrCode.isScanning) {
     html5QrCode.stop().then(() => {
@@ -128,7 +124,6 @@ function makeTransfer() {
   const name = document.getElementById('name-input').value.trim().toUpperCase(); 
   const txId = Math.floor(100000000 + Math.random() * 900000000);
   
-  // Рассчитываем текущие дату и время в момент нажатия
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -140,7 +135,6 @@ function makeTransfer() {
   const formattedDateTime = `${day}.${month}.${year}, ${hours}:${minutes}:${seconds}`;
   const formattedAmount = amountInput.toFixed(2).replace('.', ',');
 
-  // Запись действия в историю
   historyData.unshift({
     date: formattedDateTime,
     recipient: name,
@@ -148,7 +142,6 @@ function makeTransfer() {
     bank: selectedBankName
   });
 
-  // Заполнение HTML структуры квитанции данными
   document.getElementById('rec-name').textContent = name;
   document.getElementById('rec-phone').textContent = '996' + document.getElementById('phone-input').value.replace(/\s+/g, '');
   document.getElementById('rec-amount').textContent = formattedAmount;
@@ -199,11 +192,9 @@ function shareReceiptOnIphone() {
   canvas.width = 600;
   canvas.height = 900;
 
-  // Белая подложка
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Круглый логотип db
   ctx.strokeStyle = '#e30613';
   ctx.lineWidth = 3;
   ctx.beginPath();
@@ -214,19 +205,16 @@ function shareReceiptOnIphone() {
   ctx.font = 'bold 20px Arial';
   ctx.fillText('db', 49, 72);
 
-  // Текст бренда
   ctx.fillStyle = '#e30613';
   ctx.font = 'bold 26px Arial';
   ctx.fillText('DemirBank', 95, 68);
 
-  // Номер квитанции справа
   ctx.fillStyle = '#2b2b2b';
   ctx.font = 'bold 26px Arial';
   ctx.textAlign = 'right';
   ctx.fillText(`№:${txId}`, 550, 68);
   ctx.textAlign = 'left';
 
-  // Поля данных
   const fields = [
     { label: 'Дата и время транзакции', val: date, bold: true },
     { label: 'Способ отправки', val: 'Smart payments', bold: false },
@@ -252,7 +240,6 @@ function shareReceiptOnIphone() {
     y += 38;
   });
 
-  // Пунктирный разделитель
   ctx.strokeStyle = '#dcdcdc';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -260,7 +247,6 @@ function shareReceiptOnIphone() {
   ctx.lineTo(550, y - 10);
   ctx.stroke();
 
-  // Блок описания
   ctx.fillStyle = '#8c8c8c';
   ctx.font = '15px Arial';
   ctx.fillText('Описание', 50, y);
@@ -269,7 +255,6 @@ function shareReceiptOnIphone() {
   ctx.font = '18px Arial';
   ctx.fillText(desc, 50, y);
 
-  // ВОССТАНОВЛЕНО: СИНЯЯ БАНКОВСКАЯ ПЕЧАТЬ ПОД УГЛОМ И ФУТЕР ХОЛСТА
   ctx.save();
   ctx.translate(430, 720);
   ctx.rotate(-12 * Math.PI / 180);
@@ -291,4 +276,15 @@ function shareReceiptOnIphone() {
   ctx.fillText('ИНТЕРНЭШНЛ БАНК»', -40, 5);
   ctx.restore();
 
-  
+  ctx.fillStyle = '#8c8c8c';
+  ctx.font = '12px Arial';
+  ctx.fillText('Лицензия НБКР № 035', 50, 840);
+  ctx.textAlign = 'right';
+  ctx.fillText('+996 (312) 610 610, 2222', 550, 840);
+  ctx.textAlign = 'left';
+
+  const link = document.createElement('a');
+  link.download = `receipt-${txId}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
