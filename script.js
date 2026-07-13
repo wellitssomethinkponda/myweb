@@ -276,3 +276,56 @@ function shareReceiptOnIphone() {
     }
   }, 'image/png');
 }
+
+let scannedName = "";
+
+// 1. Запуск сканера
+Html5Qrcode.getCameras().then(cameras => {
+  if (cameras && cameras.length > 0) {
+    const cameraId = cameras[0].id; // берем основную камеру
+    const html5QrCode = new Html5Qrcode("reader");
+    
+    html5QrCode.start(
+      cameraId,
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      (decodedText, decodedResult) => {
+        // Успешное чтение QR
+        scannedName = decodedText; // Сохраняем имя из QR
+        alert(`QR отсканирован! Имя: ${scannedName}`);
+        html5QrCode.stop(); // Останавливаем камеру после сканирования
+      },
+      (errorMessage) => {
+        // Ошибки сканирования (можно оставить пустым)
+      }
+    );
+  }
+}).catch(err => {
+  console.error("Ошибка при доступе к камере: ", err);
+});
+
+// 2. Обработка ввода и времени
+function processData() {
+  if (!scannedName) {
+    alert("Пожалуйста, сначала отсканируйте QR-код!");
+    return;
+  }
+  
+  const sum = document.getElementById("amount").value;
+  if (!sum) {
+    alert("Введите сумму!");
+    return;
+  }
+
+  // Получаем текущее время
+  const now = new Date();
+  const timeString = now.toLocaleTimeString('ru-RU'); // пример: 18:35:12
+
+  // Выводим результат
+  const outputDiv = document.getElementById("output");
+  outputDiv.innerHTML = `
+    <p>Имя: <b>${scannedName}</b></p>
+    <p>Сумма: <b>${sum}</b></p>
+    <p>Время: <b>${timeString}</b></p>
+  `;
+}
+
